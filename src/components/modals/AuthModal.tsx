@@ -360,7 +360,7 @@ export const AuthModal: React.FC = () => {
                   setStudentId(e.target.value.toUpperCase());
                   setStudentIdError(null);
                 }}
-                placeholder="e.g. CS2026048"
+                placeholder="e.g. 260121250 or CS2026048"
                 className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] text-xs bg-[var(--color-bg)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--focus)] font-mono transition-colors"
                 required
               />
@@ -510,7 +510,7 @@ export const AuthModal: React.FC = () => {
                   type="text"
                   value={regStudentId}
                   onChange={e => setRegStudentId(e.target.value.toUpperCase())}
-                  placeholder="e.g. CS2026099"
+                  placeholder="e.g. 260121250"
                   className="w-full px-2.5 py-1.5 rounded-xl border border-[var(--color-border)] text-xs bg-[var(--color-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--focus)] font-mono"
                   required
                 />
@@ -525,7 +525,7 @@ export const AuthModal: React.FC = () => {
                 type="email"
                 value={regEmail}
                 onChange={e => setRegEmail(e.target.value)}
-                placeholder="priya.sharma@campus.edu"
+                placeholder="priyanka.260121250@gehu.ac.in"
                 className="w-full px-2.5 py-1.5 rounded-xl border border-[var(--color-border)] text-xs bg-[var(--color-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--focus)]"
                 required
               />

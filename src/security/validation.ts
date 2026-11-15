@@ -5,16 +5,16 @@ import { z } from 'zod';
  * Defense against malformed payloads, injection vectors, and invalid state transitions
  */
 
-// Normalizes & validates Student ID (e.g., CS2023048, EC2024012, IT2022099)
-export const studentIdPattern = /^[A-Za-z]{2,4}\d{4,8}$/;
+// Normalizes & validates Student ID (supports university roll numbers like 260121250 as well as alphanumeric codes like CS2026048)
+export const studentIdPattern = /^[A-Za-z0-9_-]{5,16}$/;
 
 export const StudentLoginSchema = z.object({
   studentId: z
     .string()
     .trim()
-    .min(6, 'Student ID must be at least 6 characters')
+    .min(5, 'Student ID must be at least 5 characters')
     .max(16, 'Student ID cannot exceed 16 characters')
-    .regex(studentIdPattern, 'Invalid Student ID format. Example: CS2023048, EC2024012'),
+    .regex(studentIdPattern, 'Invalid Student ID format. Example: 260121250 or CS2026048'),
   dob: z
     .string()
     .trim()
@@ -54,9 +54,9 @@ export const RegisterStudentSchema = z.object({
     .string()
     .trim()
     .toUpperCase()
-    .min(6, 'Student ID must be at least 6 characters')
+    .min(5, 'Student ID must be at least 5 characters')
     .max(16, 'Student ID cannot exceed 16 characters')
-    .regex(studentIdPattern, 'Format must match department roll structure (e.g., CS2023048)'),
+    .regex(studentIdPattern, 'Format must match your student ID / roll number (e.g., 260121250)'),
   email: z
     .string()
     .trim()
@@ -97,11 +97,7 @@ export const RegisterStudentSchema = z.object({
     }, 'Student must be at least 15 years of age with a valid calendar date'),
   password: z
     .string()
-    .min(8, 'Password must be at least 8 characters long')
-    .regex(/[A-Z]/, 'Password must include at least one uppercase letter (A-Z)')
-    .regex(/[a-z]/, 'Password must include at least one lowercase letter (a-z)')
-    .regex(/[0-9]/, 'Password must include at least one digit (0-9)')
-    .regex(/[^A-Za-z0-9]/, 'Password must include at least one special character (!@#$%^&*)'),
+    .min(6, 'Password must be at least 6 characters long'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Passwords do not match',

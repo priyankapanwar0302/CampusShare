@@ -554,6 +554,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       localStorage.setItem('campusshare_user_db', JSON.stringify(updatedDb));
     } catch {}
 
+    // Sync profile to Supabase if configured
+    if (isSupabaseConfigured) {
+      supabase.from('profiles').insert({
+        id: newUser.id,
+        name: newUser.name,
+        student_id: newUser.studentId,
+        email: newUser.email,
+        role: 'student',
+        course_id: newUser.courseId,
+        semester: newUser.semester,
+        created_at: new Date().toISOString()
+      }).then(({ error }) => {
+        if (error) console.log('Supabase profile sync note:', error.message);
+      });
+    }
+
     setSession(newUser);
     setAuthModalOpen(false);
 
