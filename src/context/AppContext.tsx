@@ -33,6 +33,7 @@ import {
 } from '../security/authService';
 import { sanitizeInput } from '../security/sanitization';
 import { StudentLoginSchema, AdminLoginSchema, RegisterStudentSchema } from '../security/validation';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 export interface Toast {
   id: string;
@@ -116,6 +117,9 @@ interface AppContextType {
   toasts: Toast[];
   addToast: (toast: Omit<Toast, 'id'>) => void;
   removeToast: (id: string) => void;
+
+  // Supabase Status
+  isSupabaseLive: boolean;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -235,6 +239,69 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [resources, setResources] = useState<Resource[]>(mockResources);
   const [requests, setRequests] = useState<ResourceRequest[]>(mockRequests);
   const [announcements, setAnnouncements] = useState<Announcement[]>(mockAnnouncements);
+  const [isSupabaseLive, setIsSupabaseLive] = useState(false);
+
+  // Synchronize live data from Supabase if configured
+  useEffect(() => {
+    if (!isSupabaseConfigured) return;
+
+    const fetchSupabaseData = async () => {
+      try {
+        // 1. Fetch live resources
+        const { data: dbResources, error: resError } = await supabase
+          .from('resources')
+          .select('*');
+
+        if (!resError && dbResources && dbResources.length > 0) {
+          // Normalize column names if needed
+          const mapped: Resource[] = dbResources.map(r => ({
+            id: r.id,
+            courseId: r.course_id || r.courseId,
+            subjectId: r.subject_id || r.subjectId,
+            semester: r.semester,
+            type: r.type,
+            title: r.title,
+            description: r.description || '',
+            unitOrTopic: r.unit_or_topic || r.unitOrTopic || 'General',
+            fileFormat: r.file_format || r.fileFormat || 'PDF',
+            fileSize: r.file_size || r.fileSize || '1.5 MB',
+            pageCount: r.page_count || r.pageCount || 1,
+            downloadCount: r.download_count || r.downloadCount || 0,
+            rating: r.rating || 5.0,
+            uploadDate: r.upload_date || r.uploadDate || new Date().toISOString().split('T')[0],
+            uploaderName: r.uploader_name || r.uploaderName || 'Faculty',
+            isVerified: r.is_verified ?? r.isVerified ?? true,
+            tags: r.tags || [],
+            previewPages: r.preview_pages || r.previewPages || []
+          }));
+          setResources(mapped);
+          setIsSupabaseLive(true);
+        }
+
+        // 2. Fetch live announcements
+        const { data: dbAnnouncements, error: annError } = await supabase
+          .from('announcements')
+          .select('*');
+
+        if (!annError && dbAnnouncements && dbAnnouncements.length > 0) {
+          setAnnouncements(dbAnnouncements.map(a => ({
+            id: a.id,
+            title: a.title,
+            content: a.content,
+            author: a.author || 'Admin',
+            category: a.category || 'academic',
+            date: a.date || 'Recent',
+            isNew: a.is_new ?? true,
+            targetCourse: a.target_course
+          })));
+        }
+      } catch (err) {
+        console.warn('[CampusShare] Error synchronizing with Supabase, fallback active:', err);
+      }
+    };
+
+    fetchSupabaseData();
+  }, []);
 
   // Modals
   const [searchOpen, setSearchOpen] = useState(false);
@@ -744,6 +811,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     setRequests(prev => [newReq, ...prev]);
     setRequestModal({ isOpen: false });
+
+    // Sync to Supabase if configured
+    if (isSupabaseConfigured) {
+      supabase.from('resource_requests').insert({
+        id: newReq.id,
+        user_id: currentUser?.id || null,
+        student_name: newReq.studentName,
+        student_email: newReq.studentEmail,
+        course_id: newReq.courseId,
+        subject_id: newReq.subjectId,
+        resource_type: newReq.resourceType,
+        topic: newReq.topic,
+        urgency: newReq.urgency,
+        note: newReq.note || null,
+        status: newReq.status
+      }).then(({ error }) => {
+        if (error) console.warn('Supabase request sync note:', error.message);
+      });
+    }
+
     addToast({
       title: 'Resource Requested',
       message: 'Your request has been routed to the department faculty coordinator.',
@@ -848,6 +935,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toasts,
         addToast,
         removeToast,
+        isSupabaseLive,
       }}
     >
       {children}

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { formatDisplayDate, Resource, BackpackFolder, UserBackpackUpload } from '../../types';
+import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 import { 
   ChevronRight, 
   FileText, 
@@ -290,6 +291,18 @@ export const BookmarksView: React.FC = () => {
     setNewFolderName('');
     setIsNewFolderModalOpen(false);
 
+    // Sync to Supabase if configured
+    if (isSupabaseConfigured) {
+      supabase.from('backpack_folders').insert({
+        id: newFolder.id,
+        user_id: currentUser?.id || 'guest',
+        name: trimmed,
+        created_at: new Date().toISOString()
+      }).then(({ error }) => {
+        if (error) console.log('Supabase folder sync note:', error.message);
+      });
+    }
+
     addToast({
       title: 'Folder Created',
       message: `"${trimmed}" added to your Backpack shelf.`,
@@ -385,6 +398,24 @@ export const BookmarksView: React.FC = () => {
     setUploadTitle('');
     setUploadNotes('');
     setFileName('');
+
+    // Sync to Supabase if configured
+    if (isSupabaseConfigured) {
+      supabase.from('backpack_items').insert({
+        id: newUpload.id,
+        user_id: currentUser?.id || 'guest',
+        folder_id: uploadFolderId === 'none' ? null : uploadFolderId,
+        title: trimmedTitle,
+        category: uploadCategory,
+        file_format: uploadFormat,
+        file_size: newUpload.fileSize,
+        notes: uploadNotes.trim() || null,
+        preview_pages: newUpload.previewPages,
+        is_custom_upload: true
+      }).then(({ error }) => {
+        if (error) console.log('Supabase upload sync note:', error.message);
+      });
+    }
 
     addToast({
       title: 'Material Uploaded',
