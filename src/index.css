@@ -1,0 +1,522 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    /* CampusShare Organic Tactile Theme - Light Theme */
+    --bg: #F4F0EA;                  /* Warm creamy off-white canvas (80% base) */
+    --surface: #FAF8F5;             /* Crisp warm ivory container surfaces */
+    --surface-alt: #EBE5DC;         /* Muted earthy taupe/sand secondary sections (15%) */
+    --surface-dark: #2D2621;        /* Deep espresso charcoal for special dark cards */
+    --tint: #EBE5DC;                /* Subtle taupe tint */
+    --text: #3E362E;                /* Deep espresso brown typography */
+    --text-muted: #786C60;          /* Soft warm charcoal / espresso-taupe */
+    --primary: #2A4465;             /* Deep rich indigo blue (Strategic 5% primary CTA & active) */
+    --primary-hover: #1E334D;
+    --on-primary: #FFFFFF;
+    --banner-bg: #EBE5DC;           /* Subtle taupe container background */
+    --link: #2A4465;
+    --focus: #2A4465;
+
+    /* Secondary Accent: Muted Earthy Taupe / Sand (#AF947E) */
+    --taupe: #AF947E;
+    --taupe-light: #EBE5DC;
+    --border: #DCD4CA;              /* Soft earthy taupe border instead of stark grays */
+    --border-hover: #AF947E;
+
+    /* The Cherry Pink Accent: Soft Cherry Pink (#D96570) */
+    --cherry-pink: #D96570;
+    --cherry-pink-hover: #C5535E;
+    --cherry-pink-subtle: rgba(217, 101, 112, 0.12);
+    --cherry-pink-border: rgba(217, 101, 112, 0.28);
+    --accent: #D96570;              /* Cherry pink accent for badges, active underlines, micro-highlights */
+    --on-accent: #FFFFFF;
+    --sage: #798D83;                /* Sage green for verification status */
+    --success: #798D83;
+
+    /* Background Fallback Subtle Organic Tones */
+    --bg-glow-tl: rgba(42, 68, 101, 0.035);
+    --bg-glow-tr: rgba(175, 148, 126, 0.05);
+    --bg-glow-bl: rgba(154, 59, 51, 0.025);
+    --bg-dots: rgba(62, 54, 46, 0.035);
+
+    /* Clean Card & Surface Tokens */
+    --glass-bg: #FAF8F5;
+    --glass-chip-bg: #EBE5DC;
+    --glass-border: #DCD4CA;
+    --glass-shadow: 0 2px 10px -1px rgba(62, 54, 46, 0.04);
+    --glass-blur: 4px;
+
+    /* Semantic Headings & Shadows */
+    --gradient-heading: linear-gradient(135deg, #3E362E 0%, #2A4465 100%);
+    --shadow-sm: 0 1px 3px 0 rgba(62, 54, 46, 0.05);
+    --shadow-md: 0 4px 16px -2px rgba(62, 54, 46, 0.06), 0 2px 6px -1px rgba(62, 54, 46, 0.03);
+    --shadow-hover: 0 8px 24px -4px rgba(42, 68, 101, 0.12), 0 4px 8px -2px rgba(62, 54, 46, 0.04);
+    --shadow-modal: 0 20px 40px -12px rgba(62, 54, 46, 0.18);
+    --backdrop-color: rgba(62, 54, 46, 0.40);
+
+    /* Direct Compatibility Aliases */
+    --color-bg: var(--bg);
+    --color-surface: var(--surface);
+    --color-tint: var(--tint);
+    --color-text: var(--text);
+    --color-text-muted: var(--text-muted);
+    --color-primary: var(--primary);
+    --color-primary-btn: var(--primary);
+    --color-on-primary: var(--on-primary);
+    --color-link: var(--link);
+    --color-accent: var(--accent);
+    --color-on-accent: var(--on-accent);
+    --color-accent-text: var(--on-accent);
+    --color-secondary: var(--surface-alt);
+    --color-border: var(--border);
+    --color-focus: var(--focus);
+
+    /* Legacy aliases */
+    --bg-ivory: var(--bg);
+    --bg-ivory-warm: var(--bg);
+    --surface-card: var(--surface);
+    --surface-charcoal: var(--surface-dark);
+    --text-charcoal: var(--text);
+    --text-muted-charcoal: var(--text-muted);
+    --accent-crimson: var(--primary);
+    --accent-crimson-hover: var(--primary-hover);
+    --accent-crimson-light: var(--tint);
+    --border-ivory: var(--border);
+    --border-ivory-darker: var(--border);
+
+    --wall-ink: #2D2621;
+    --wall-cream: #F4F0EA;
+    --wall-cream-soft: #786C60;
+    --wall-scrim: transparent;
+    --wall-grad-top: transparent;
+    --wall-grad-mid: transparent;
+    --wall-grad-bottom: transparent;
+    --wall-glow-gold: transparent;
+    --wall-glow-pink: transparent;
+  }
+
+  .dark {
+    /* CampusShare Organic Tactile Theme - Dark Theme */
+    --bg: #1A1613;                  /* Deep espresso night canvas */
+    --surface: #241E1A;             /* Warm dark espresso container surfaces */
+    --surface-alt: #302823;         /* Dark earthy taupe/charcoal */
+    --surface-dark: #120F0D;        /* Deepest espresso base */
+    --tint: #302823;
+    --text: #F4F0EA;                /* Warm creamy off-white typography */
+    --text-muted: #B5A89C;          /* Soft light taupe text */
+    --primary: #6B8DB2;             /* Softened readable indigo blue */
+    --primary-hover: #85A4C6;
+    --on-primary: #1A1613;
+    --banner-bg: #302823;
+    --link: #6B8DB2;
+    --focus: #6B8DB2;
+
+    /* Secondary Accent (Earthy Taupe / Sand) */
+    --taupe: #AF947E;
+    --taupe-light: #302823;
+    --border: #3D332B;              /* Dark earthy taupe border */
+    --border-hover: #AF947E;
+
+    /* The Cherry Pink Accent: Soft Cherry Pink (#E57A8B) */
+    --cherry-pink: #E57A8B;
+    --cherry-pink-hover: #F08E9E;
+    --cherry-pink-subtle: rgba(229, 122, 139, 0.16);
+    --cherry-pink-border: rgba(229, 122, 139, 0.32);
+    --accent: #E57A8B;
+    --on-accent: #1A1613;
+    --sage: #95ABA0;
+    --success: #95ABA0;
+
+    /* Background Fallback Tokens */
+    --bg-glow-tl: rgba(107, 141, 178, 0.06);
+    --bg-glow-tr: rgba(175, 148, 126, 0.05);
+    --bg-glow-bl: rgba(212, 115, 107, 0.04);
+    --bg-dots: rgba(244, 240, 234, 0.02);
+
+    /* Clean Card & Surface Tokens */
+    --glass-bg: #241E1A;
+    --glass-chip-bg: #302823;
+    --glass-border: #3D332B;
+    --glass-shadow: 0 2px 12px -1px rgba(0, 0, 0, 0.35);
+    --glass-blur: 4px;
+
+    /* Semantic Headings & Shadows */
+    --gradient-heading: linear-gradient(135deg, #F4F0EA 0%, #6B8DB2 100%);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 16px -2px rgba(0, 0, 0, 0.35), 0 2px 6px -1px rgba(0, 0, 0, 0.2);
+    --shadow-hover: 0 8px 24px -4px rgba(107, 141, 178, 0.22), 0 4px 8px -2px rgba(0, 0, 0, 0.25);
+    --shadow-modal: 0 20px 40px -12px rgba(0, 0, 0, 0.6);
+    --backdrop-color: rgba(20, 17, 14, 0.70);
+
+    /* Direct Compatibility Aliases */
+    --color-bg: var(--bg);
+    --color-surface: var(--surface);
+    --color-tint: var(--tint);
+    --color-text: var(--text);
+    --color-text-muted: var(--text-muted);
+    --color-primary: var(--primary);
+    --color-primary-btn: var(--primary);
+    --color-on-primary: var(--on-primary);
+    --color-link: var(--link);
+    --color-accent: var(--accent);
+    --color-on-accent: var(--on-accent);
+    --color-accent-text: var(--on-accent);
+    --color-secondary: var(--surface-alt);
+    --color-border: var(--border);
+    --color-focus: var(--focus);
+
+    /* Legacy aliases */
+    --bg-ivory: var(--bg);
+    --bg-ivory-warm: var(--bg);
+    --surface-card: var(--surface);
+    --surface-charcoal: var(--surface-dark);
+    --text-charcoal: var(--text);
+    --text-muted-charcoal: var(--text-muted);
+    --accent-crimson: var(--primary);
+    --accent-crimson-hover: var(--primary-hover);
+    --accent-crimson-light: var(--tint);
+    --border-ivory: var(--border);
+    --border-ivory-darker: var(--border);
+
+    --wall-ink: #14110E;
+    --wall-cream: #F4F0EA;
+    --wall-cream-soft: #B5A89C;
+    --wall-scrim: transparent;
+    --wall-grad-top: transparent;
+    --wall-grad-mid: transparent;
+    --wall-grad-bottom: transparent;
+    --wall-glow-gold: transparent;
+    --wall-glow-pink: transparent;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+  }
+
+  /* Stage 1: Soft Radial Glows on fixed pseudo-element */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      radial-gradient(circle at 0% 0%, var(--bg-glow-tl) 0%, transparent 55%),
+      radial-gradient(circle at 100% 0%, var(--bg-glow-tr) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, var(--bg-glow-bl) 0%, transparent 60%);
+  }
+
+  /* Stage 1: Faint Dot Texture with Bottom-Fade Mask on fixed pseudo-element */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(circle at 1px 1px, var(--bg-dots) 1px, transparent 0);
+    background-size: 24px 24px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.75) 45%, rgba(0, 0, 0, 0) 95%);
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 0.75) 45%, rgba(0, 0, 0, 0) 95%);
+  }
+
+  /* Mobile: Smaller glows and 20px dot grid below 640px */
+  @media (max-width: 639px) {
+    body::before {
+      background-image:
+        radial-gradient(circle at 0% 0%, var(--bg-glow-tl) 0%, transparent 40%),
+        radial-gradient(circle at 100% 0%, var(--bg-glow-tr) 0%, transparent 35%),
+        radial-gradient(circle at 0% 100%, var(--bg-glow-bl) 0%, transparent 45%);
+    }
+    body::after {
+      background-size: 20px 20px;
+    }
+  }
+
+  /* Stage 2: Grain Overlay Layer (Reduced Haze) */
+  .noise-overlay {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.25;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+
+  /* Print Styles: Hide background decoration and wallpaper layers */
+  @media print {
+    body::before,
+    body::after,
+    .wallpaper-layers,
+    .noise-overlay,
+    video {
+      display: none !important;
+    }
+  }
+
+  /* Accessible dialog containment per modern-web-guidance */
+  dialog:modal {
+    overscroll-behavior: contain;
+  }
+
+  dialog::backdrop {
+    overflow: hidden;
+    overscroll-behavior: contain;
+    background: var(--backdrop-color);
+    backdrop-filter: blur(8px);
+  }
+
+  /* Visible :focus-visible outline using --focus with 2px solid and 2px offset */
+  :focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  button:focus-visible,
+  a:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+}
+
+/* Primary buttons: Strategic Indigo (#2A4465) with white text */
+.btn-primary {
+  background-color: var(--primary);
+  color: var(--on-primary);
+  font-weight: 600;
+  transition: background-color 150ms ease, opacity 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+.btn-primary:hover:not(:disabled) {
+  background-color: var(--primary-hover);
+  opacity: 0.98;
+}
+
+/* Accent buttons: Strategic Cherry Pink (#D96570) with white text */
+.btn-accent {
+  background-color: var(--cherry-pink);
+  color: #FFFFFF !important;
+  font-weight: 700;
+  transition: background-color 150ms ease, filter 150ms ease, transform 150ms ease, box-shadow 150ms ease;
+}
+.btn-accent:hover:not(:disabled) {
+  background-color: var(--cherry-pink-hover);
+  filter: brightness(0.96);
+}
+
+/* Accent badges: Cherry Pink micro-accent */
+.badge-accent {
+  background-color: var(--cherry-pink);
+  color: #FFFFFF !important;
+  font-weight: 700;
+}
+
+/* Secondary grounded buttons: Deep espresso brown text with soft taupe border (Rule 3) */
+.btn-secondary {
+  background-color: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  transition: background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+.btn-secondary:hover:not(:disabled) {
+  background-color: var(--surface-alt);
+  border-color: var(--text);
+  color: var(--text);
+}
+
+/* Links and highlighted clickable text: deep indigo with cherry pink hover (Rule 2) */
+.text-link {
+  color: var(--link);
+  transition: color 150ms ease, opacity 150ms ease;
+}
+.text-link:hover {
+  color: var(--cherry-pink);
+  text-decoration: underline;
+}
+
+/* Headings and key highlights gradient: 24px+ only */
+.text-gradient {
+  background: var(--gradient-heading);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Card lift & interaction utilities */
+.card-nav {
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 1rem;
+  color: var(--text);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+}
+
+/* Stage 2: Translucent Glass Panels and Cards */
+.cs-glass-panel,
+.cs-home-announcement,
+.cs-hero-card,
+.cs-stat-card,
+.cs-step-tracker,
+.cs-content-card,
+.cs-home-how-it-works,
+.cs-home-countdown,
+.cs-home-feedback,
+#cs-site-footer {
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+}
+
+/* Stage 2: Translucent Glass Chips and Tags */
+.cs-glass-chip,
+.cs-portal-tag,
+.cs-step-chip,
+.cs-announcement-tag,
+.cs-cohort-tag {
+  background-color: var(--glass-chip-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+}
+
+/* Mobile responsive blur adjustment: 4px below 640px */
+@media (max-width: 639px) {
+  :root,
+  .dark {
+    --glass-blur: 4px;
+  }
+}
+
+/* Safety Fallbacks: unsupported backdrop-filter */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .card-nav,
+  .cs-glass-panel,
+  .cs-home-announcement,
+  .cs-hero-card,
+  .cs-stat-card,
+  .cs-step-tracker,
+  .cs-content-card,
+  .cs-home-how-it-works,
+  .cs-home-countdown,
+  .cs-home-feedback,
+  #cs-site-footer {
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .cs-glass-chip,
+  .cs-portal-tag,
+  .cs-step-chip,
+  .cs-announcement-tag,
+  .cs-cohort-tag {
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* Safety Fallbacks: prefers-reduced-transparency or prefers-contrast: more */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  .card-nav,
+  .cs-glass-panel,
+  .cs-home-announcement,
+  .cs-hero-card,
+  .cs-stat-card,
+  .cs-step-tracker,
+  .cs-content-card,
+  .cs-home-how-it-works,
+  .cs-home-countdown,
+  .cs-home-feedback,
+  #cs-site-footer {
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
+  .cs-glass-chip,
+  .cs-portal-tag,
+  .cs-step-chip,
+  .cs-announcement-tag,
+  .cs-cohort-tag {
+    background-color: var(--surface) !important;
+    border: 1px solid var(--border) !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card-nav {
+    transition: transform 200ms ease, box-shadow 200ms ease, border-color 200ms ease;
+  }
+  .card-nav:hover,
+  .card-nav:focus-visible {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary);
+  }
+  .card-nav:active {
+    transform: scale(0.98);
+  }
+
+  .step-transition {
+    animation: stepFadeSlide 200ms ease-out forwards;
+  }
+}
+
+@keyframes stepFadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Skeleton Loading Placeholder */
+.skeleton-block {
+  background: linear-gradient(90deg, var(--border) 25%, var(--surface) 50%, var(--border) 75%);
+  background-size: 200% 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .skeleton-block {
+    animation: skeletonShimmer 1.5s infinite;
+  }
+}
+@keyframes skeletonShimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+}
