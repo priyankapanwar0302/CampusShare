@@ -37,15 +37,13 @@ export const ChangePasswordModal: React.FC = () => {
     }
   };
 
-  const hasLength = newPass.length >= 8;
-  const hasNumber = /\d/.test(newPass);
-  const hasSpecial = /[^A-Za-z0-9]/.test(newPass);
+  const hasLength = newPass.length >= 6;
   const passwordsMatch = newPass === confirmPass && confirmPass.length > 0;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!hasLength || !hasNumber) {
-      setErrorMsg('Please satisfy all password complexity requirements.');
+    if (!hasLength) {
+      setErrorMsg('Password must be at least 6 characters long.');
       return;
     }
     if (newPass !== confirmPass) {
@@ -143,27 +141,13 @@ export const ChangePasswordModal: React.FC = () => {
                 <span className="w-3.5 h-3.5 rounded-full border border-[var(--border)] inline-block"></span>
               )}
               <span className={hasLength ? 'text-[var(--text)] font-medium' : ''}>
-                At least 8 characters
+                At least 6 characters
               </span>
             </div>
             <div className="flex items-center gap-2">
-              {hasNumber ? (
-                <Check className="w-3.5 h-3.5 text-[var(--link)]" />
-              ) : (
-                <span className="w-3.5 h-3.5 rounded-full border border-[var(--border)] inline-block"></span>
-              )}
-              <span className={hasNumber ? 'text-[var(--text)] font-medium' : ''}>
-                Contains at least 1 number
-              </span>
-            </div>
-            <div className="flex items-center gap-2">
-              {hasSpecial ? (
-                <Check className="w-3.5 h-3.5 text-[var(--link)]" />
-              ) : (
-                <span className="w-3.5 h-3.5 rounded-full border border-[var(--border)] inline-block"></span>
-              )}
-              <span className={hasSpecial ? 'text-[var(--text)] font-medium' : ''}>
-                Contains special character (recommended)
+              <Check className="w-3.5 h-3.5 text-[var(--link)]" />
+              <span className="text-[var(--text)] font-medium">
+                Numbers, letters, symbols, or combinations
               </span>
             </div>
           </div>

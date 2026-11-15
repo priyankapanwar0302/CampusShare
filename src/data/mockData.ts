@@ -59,9 +59,9 @@ export const mockUsers: Record<'student' | 'admin', User> = {
   },
   admin: {
     id: 'user-adm-001',
-    name: 'Prof. Sarah Jenkins',
+    name: 'Priyanka Panwar',
     studentId: 'FACULTY-891',
-    email: 's.jenkins@campus.edu',
+    email: 'priyankapanwar768@gmail.com',
     role: 'admin',
     courseId: 'cse',
     semester: 4,

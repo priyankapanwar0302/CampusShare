@@ -165,7 +165,7 @@ export const Footer: React.FC = () => {
                   : 'bg-[var(--surface-alt)] text-[var(--text)] hover:border-[var(--primary)] border border-[var(--border)]'
               }`}
             >
-              Admin (Prof. Jenkins)
+              Admin (Priyanka Panwar)
             </button>
           </div>
         </div>

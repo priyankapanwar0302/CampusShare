@@ -195,18 +195,18 @@ export const INITIAL_REGISTERED_USERS: User[] = [
   },
   {
     id: 'user-adm-001',
-    name: 'Prof. Sarah Jenkins',
+    name: 'Priyanka Panwar',
     studentId: 'FACULTY-891',
-    email: 'admin@campusshare.edu',
+    email: 'priyankapanwar768@gmail.com',
     role: 'admin',
     courseId: 'cse',
     semester: 4,
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
     bookmarkedResourceIds: [],
-    dob: '10/05/1982',
+    dob: '03/02/2008',
     branch: 'School of Computing',
     batch: 'Faculty Administration',
-    // Pre-computed hash for 'Admin@Demo2026'
-    passwordHash: '$2b$10$cs_academic_salt_v1$admin_demo_2026_precomputed_hash_verified',
+    // Pre-computed hash for 'priyanka@4810'
+    passwordHash: '$2b$10$cs_academic_salt_v1$fd5c465cc03d7757638636060807aabbf35b487961d0b9ca72f9c444030c1f33',
   },
 ];

@@ -5,16 +5,16 @@ import { z } from 'zod';
  * Defense against malformed payloads, injection vectors, and invalid state transitions
  */
 
-// Normalizes & validates Student ID (supports university roll numbers like 260121250 as well as alphanumeric codes like CS2026048)
-export const studentIdPattern = /^[A-Za-z0-9_-]{5,16}$/;
+// Normalizes & validates Student ID (supports 7-10 digit numbers as well as department roll codes)
+export const studentIdPattern = /^(?:\d{7,10}|[A-Za-z0-9_-]{5,16})$/;
 
 export const StudentLoginSchema = z.object({
   studentId: z
     .string()
     .trim()
-    .min(5, 'Student ID must be at least 5 characters')
+    .min(5, 'Student ID must be between 7-10 digits or roll code')
     .max(16, 'Student ID cannot exceed 16 characters')
-    .regex(studentIdPattern, 'Invalid Student ID format. Example: 260121250 or CS2026048'),
+    .regex(studentIdPattern, 'Invalid Student ID. Enter a 7-10 digit roll number (e.g., 260121250) or department roll code'),
   dob: z
     .string()
     .trim()
@@ -54,9 +54,9 @@ export const RegisterStudentSchema = z.object({
     .string()
     .trim()
     .toUpperCase()
-    .min(5, 'Student ID must be at least 5 characters')
+    .min(5, 'Student ID must be between 7-10 digits or roll code')
     .max(16, 'Student ID cannot exceed 16 characters')
-    .regex(studentIdPattern, 'Format must match your student ID / roll number (e.g., 260121250)'),
+    .regex(studentIdPattern, 'Format must match your 7-10 digit student ID / roll number (e.g., 260121250)'),
   email: z
     .string()
     .trim()
@@ -98,7 +98,7 @@ export const RegisterStudentSchema = z.object({
     }, 'Student must be at least 15 years of age with a valid calendar date'),
   password: z
     .string()
-    .min(6, 'Password must be at least 6 characters long'),
+    .min(6, 'Password must be at least 6 characters (numbers, characters, symbols, or any combination)'),
   confirmPassword: z.string().optional(),
 }).refine((data) => !data.confirmPassword || data.password === data.confirmPassword, {
   message: 'Passwords do not match',

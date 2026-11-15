@@ -25,8 +25,8 @@ export const AuthModal: React.FC = () => {
   const [studentDobError, setStudentDobError] = useState<string | null>(null);
 
   // Admin inputs
-  const [adminEmail, setAdminEmail] = useState('admin@campusshare.edu');
-  const [adminPassword, setAdminPassword] = useState('Admin@Demo2026');
+  const [adminEmail, setAdminEmail] = useState('priyankapanwar768@gmail.com');
+  const [adminPassword, setAdminPassword] = useState('priyanka@4810');
   const [showAdminPassword, setShowAdminPassword] = useState(false);
   const [adminEmailError, setAdminEmailError] = useState<string | null>(null);
   const [adminPasswordError, setAdminPasswordError] = useState<string | null>(null);
@@ -130,8 +130,8 @@ export const AuthModal: React.FC = () => {
   };
 
   const handleFillDemoAdmin = () => {
-    setAdminEmail('admin@campusshare.edu');
-    setAdminPassword('Admin@Demo2026');
+    setAdminEmail('priyankapanwar768@gmail.com');
+    setAdminPassword('priyanka@4810');
     setFormError(null);
     setAdminEmailError(null);
     setAdminPasswordError(null);
@@ -361,7 +361,7 @@ export const AuthModal: React.FC = () => {
                   setStudentId(e.target.value.toUpperCase());
                   setStudentIdError(null);
                 }}
-                placeholder="e.g. 260121250 or CS2026048"
+                placeholder="e.g. 260121250 (7-10 digits) or CS2026048"
                 className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] text-xs bg-[var(--color-bg)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--focus)] font-mono transition-colors"
                 required
               />
@@ -430,7 +430,7 @@ export const AuthModal: React.FC = () => {
                   setAdminEmail(e.target.value);
                   setAdminEmailError(null);
                 }}
-                placeholder="admin@campusshare.edu"
+                placeholder="priyankapanwar768@gmail.com"
                 className="w-full px-3 py-2 rounded-xl border border-[var(--color-border)] text-xs bg-[var(--color-bg)] text-[var(--color-text)] placeholder-[var(--color-text-muted)] focus:outline-none focus:border-[var(--focus)] transition-colors"
                 required
               />
@@ -469,7 +469,7 @@ export const AuthModal: React.FC = () => {
                 <p className="text-[11px] text-[var(--color-accent)] mt-1 font-medium">{adminPasswordError}</p>
               ) : (
                 <span className="text-[11px] text-[var(--color-text-muted)] block mt-1">
-                  Faculty Admin Password (Demo: Admin@Demo2026)
+                  Faculty Admin Password (Demo: priyanka@4810)
                 </span>
               )}
             </div>
@@ -511,7 +511,7 @@ export const AuthModal: React.FC = () => {
                   type="text"
                   value={regStudentId}
                   onChange={e => setRegStudentId(e.target.value.toUpperCase())}
-                  placeholder="e.g. 260121250"
+                  placeholder="e.g. 260121250 (7-10 digits)"
                   className="w-full px-2.5 py-1.5 rounded-xl border border-[var(--color-border)] text-xs bg-[var(--color-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--focus)] font-mono"
                   required
                 />
@@ -579,7 +579,7 @@ export const AuthModal: React.FC = () => {
                     type={showRegPassword ? 'text' : 'password'}
                     value={regPassword}
                     onChange={e => setRegPassword(e.target.value)}
-                    placeholder="Min 8 chars"
+                    placeholder="Min 6 chars (numbers, chars, symbols)"
                     className="w-full pl-2.5 pr-8 py-1.5 rounded-xl border border-[var(--color-border)] text-xs bg-[var(--color-bg)] text-[var(--color-text)] focus:outline-none focus:border-[var(--focus)]"
                     required
                   />

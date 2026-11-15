@@ -220,7 +220,7 @@ export const Navbar: React.FC = () => {
                           }}
                           className="w-full text-left px-2.5 py-1.5 rounded-xl text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--surface-alt)] transition-colors cursor-pointer"
                         >
-                          Switch to Admin (Prof. Jenkins)
+                          Switch to Admin (Priyanka Panwar)
                         </button>
                       )}
 

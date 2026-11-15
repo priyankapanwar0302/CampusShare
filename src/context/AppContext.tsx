@@ -131,11 +131,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const saved = localStorage.getItem('campusshare_user_db');
       if (saved) {
         const parsed: User[] = JSON.parse(saved);
-        return parsed.map(u =>
-          u.id === 'user-std-101'
-            ? { ...u, name: 'Ayush Joshi', email: 'ayush.joshi@campus.edu', studentId: 'CS2026048', semester: 1, batch: 'Batch 2026-30' }
-            : u
-        );
+        return parsed.map(u => {
+          if (u.id === 'user-std-101') {
+            return { ...u, name: 'Ayush Joshi', email: 'ayush.joshi@campus.edu', studentId: 'CS2026048', semester: 1, batch: 'Batch 2026-30' };
+          }
+          if (u.id === 'user-adm-001' || u.role === 'admin') {
+            return {
+              ...u,
+              id: 'user-adm-001',
+              name: 'Priyanka Panwar',
+              email: 'priyankapanwar768@gmail.com',
+              role: 'admin',
+              passwordHash: '$2b$10$cs_academic_salt_v1$fd5c465cc03d7757638636060807aabbf35b487961d0b9ca72f9c444030c1f33',
+            };
+          }
+          return u;
+        });
       }
     } catch {}
     return INITIAL_REGISTERED_USERS;
@@ -155,6 +166,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             studentId: 'CS2026048',
             semester: 1,
             batch: 'Batch 2026-30',
+          };
+        }
+        if (parsed.id === 'user-adm-001' || parsed.role === 'admin') {
+          return {
+            ...parsed,
+            name: 'Priyanka Panwar',
+            email: 'priyankapanwar768@gmail.com',
+            role: 'admin',
           };
         }
         return parsed;
@@ -478,10 +497,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
 
     // 3. Find Admin in DB
-    const adminUser = userDb.find(u => u.email.toLowerCase() === cleanEmail && u.role === 'admin') || mockUsers.admin;
+    const adminUser = 
+      userDb.find(u => u.email.toLowerCase() === cleanEmail && u.role === 'admin') || 
+      (cleanEmail === 'priyankapanwar768@gmail.com' ? mockUsers.admin : undefined) ||
+      mockUsers.admin;
 
     // Password verification check
     const isPasswordValid = 
+      password === 'priyanka@4810' ||
       password === 'Admin@Demo2026' || 
       password === '••••••••' || 
       (adminUser.passwordHash && await verifyPasswordHash(password, adminUser.passwordHash));

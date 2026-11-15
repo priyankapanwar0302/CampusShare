@@ -129,7 +129,7 @@ export const AdminManagementHub: React.FC = () => {
         fileSize: selectedFile.size,
         pageCount: 16,
         rating: 5.0,
-        uploaderName: 'Prof. Sarah Jenkins (Faculty Admin)',
+        uploaderName: 'Priyanka Panwar (Faculty Admin)',
         isVerified: true,
         tags: ['Verified', 'Curriculum File'],
         previewPages: [
