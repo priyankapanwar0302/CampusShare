@@ -51,9 +51,10 @@ export interface StudentRegisterData {
   studentId: string;
   email: string;
   branch: string;
-  batch: string;
+  batch?: string;
   dob: string;
   password: string;
+  confirmPassword?: string;
 }
 
 export type ResourceType = 'notes' | 'importantQuestions' | 'labManuals' | 'projects' | 'syllabus';

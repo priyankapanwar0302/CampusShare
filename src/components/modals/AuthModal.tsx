@@ -221,9 +221,10 @@ export const AuthModal: React.FC = () => {
       studentId: regStudentId,
       email: regEmail,
       branch: regBranch,
-      batch: regBatch,
+      batch: regBatch || 'Batch 2026-30',
       dob: regDob,
       password: regPassword,
+      confirmPassword: regConfirmPassword,
     });
     setIsSubmitting(false);
 

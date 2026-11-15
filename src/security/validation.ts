@@ -76,13 +76,14 @@ export const RegisterStudentSchema = z.object({
     .min(2, 'Please select your academic department / branch'),
   batch: z
     .string()
-    .min(4, 'Please select your graduating batch'),
+    .optional()
+    .default('Batch 2026-30'),
   dob: z
     .string()
     .trim()
     .min(8, 'Date of Birth is required')
     .refine((val) => {
-      // Validate date validity and minimum age (at least 16 years old)
+      // Validate date validity and minimum age (at least 15 years old)
       let parsedDate: Date | null = null;
       if (val.includes('-')) {
         parsedDate = new Date(val);
@@ -98,8 +99,8 @@ export const RegisterStudentSchema = z.object({
   password: z
     .string()
     .min(6, 'Password must be at least 6 characters long'),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
+  confirmPassword: z.string().optional(),
+}).refine((data) => !data.confirmPassword || data.password === data.confirmPassword, {
   message: 'Passwords do not match',
   path: ['confirmPassword'],
 });
