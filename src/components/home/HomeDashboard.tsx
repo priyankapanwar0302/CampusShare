@@ -52,7 +52,8 @@ import {
   Coins,
   Users2,
   AlertCircle,
-  Calendar
+  Calendar,
+  Upload
 } from 'lucide-react';
 
 const LAST_PATH_STORAGE_KEY = 'campusshare_last_visited_path';
@@ -67,6 +68,7 @@ export const HomeDashboard: React.FC = () => {
     toggleBookmark, 
     isBookmarked, 
     setRequestModal,
+    setStudentUploadModal,
     setAuthModalOpen,
     goToBookmarks
   } = useApp();
@@ -1165,6 +1167,26 @@ export const HomeDashboard: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
               <button
+                onClick={() => {
+                  if (!currentUser) {
+                    setAuthModalOpen(true);
+                  } else {
+                    setStudentUploadModal({
+                      isOpen: true,
+                      defaultCourseId: selectedSpecialization.id,
+                      defaultSubjectId: selectedSubject.id,
+                      defaultSemester: navPath.semester || selectedSubject.semester,
+                      defaultType: fileTypeFilter !== 'all' ? fileTypeFilter : 'notes'
+                    });
+                  }
+                }}
+                className="px-3.5 py-2 rounded-xl btn-secondary text-xs font-bold text-[var(--link)] hover:border-[var(--link)] transition-all cursor-pointer shadow-xs flex items-center justify-center gap-1.5 text-center"
+              >
+                <Upload className="w-3.5 h-3.5 text-[var(--link)]" />
+                <span>Upload Material</span>
+              </button>
+
+              <button
                 onClick={() => setRequestModal({ isOpen: true, defaultSubjectId: selectedSubject.id })}
                 className="px-3.5 py-2 rounded-xl btn-secondary text-xs font-bold text-[var(--link)] hover:border-[var(--link)] transition-all cursor-pointer shadow-xs text-center"
               >
@@ -1250,12 +1272,34 @@ export const HomeDashboard: React.FC = () => {
               <p className="text-xs text-[var(--color-text-muted)] max-w-sm mx-auto">
                 Be the first to request verified notes or upload faculty approved material.
               </p>
-              <button
-                onClick={() => setRequestModal({ isOpen: true, defaultSubjectId: selectedSubject.id })}
-                className="text-[var(--link)] font-bold hover:underline block mx-auto text-xs cursor-pointer"
-              >
-                Request Material from Department Coordinator
-              </button>
+              <div className="flex items-center justify-center gap-3 pt-1">
+                <button
+                  onClick={() => setRequestModal({ isOpen: true, defaultSubjectId: selectedSubject.id })}
+                  className="text-[var(--link)] font-bold hover:underline text-xs cursor-pointer"
+                >
+                  Request Material from Department Coordinator
+                </button>
+                <span className="text-[var(--color-text-muted)] text-xs">•</span>
+                <button
+                  onClick={() => {
+                    if (!currentUser) {
+                      setAuthModalOpen(true);
+                    } else {
+                      setStudentUploadModal({
+                        isOpen: true,
+                        defaultCourseId: selectedSpecialization.id,
+                        defaultSubjectId: selectedSubject.id,
+                        defaultSemester: navPath.semester || selectedSubject.semester,
+                        defaultType: fileTypeFilter !== 'all' ? fileTypeFilter : 'notes'
+                      });
+                    }
+                  }}
+                  className="text-[var(--link)] font-bold hover:underline text-xs cursor-pointer flex items-center gap-1"
+                >
+                  <Upload className="w-3 h-3" />
+                  <span>Upload Material</span>
+                </button>
+              </div>
             </div>
           ) : (
             <div className="cs-content-card cs-glass-panel rounded-2xl divide-y divide-[var(--glass-border)] overflow-hidden shadow-xs">

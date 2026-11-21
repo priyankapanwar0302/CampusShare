@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { formatDisplayDate, Resource, BackpackFolder, UserBackpackUpload } from '../../types';
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { STUDENT_FILE_ACCEPT, validateStudentDocumentFile } from '../../security/sanitization';
 import { 
   ChevronRight, 
   FileText, 
@@ -144,6 +145,7 @@ export const BookmarksView: React.FC = () => {
   const [uploadFormat, setUploadFormat] = useState<'PDF' | 'DOCX'>('PDF');
   const [uploadNotes, setUploadNotes] = useState('');
   const [fileName, setFileName] = useState('');
+  const [fileError, setFileError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Persist folders to localStorage
@@ -1014,12 +1016,25 @@ export const BookmarksView: React.FC = () => {
                 <input
                   type="file"
                   ref={fileInputRef}
-                  accept=".pdf,.docx,.doc,.txt"
+                  accept={STUDENT_FILE_ACCEPT}
                   className="hidden"
                   onChange={e => {
                     const f = e.target.files?.[0];
                     if (f) {
+                      const validation = validateStudentDocumentFile(f);
+                      if (!validation.isValid) {
+                        e.target.value = '';
+                        setFileName('');
+                        setFileError(validation.error || 'Invalid file format');
+                        return;
+                      }
+                      setFileError(null);
                       setFileName(f.name);
+                      if (f.name.toLowerCase().endsWith('.docx') || f.name.toLowerCase().endsWith('.doc')) {
+                        setUploadFormat('DOCX');
+                      } else {
+                        setUploadFormat('PDF');
+                      }
                       if (!uploadTitle.trim()) {
                         setUploadTitle(f.name.replace(/\.[^/.]+$/, ''));
                       }
@@ -1035,9 +1050,14 @@ export const BookmarksView: React.FC = () => {
                     {fileName ? fileName : 'Click to choose file or drop PDF / DOCX'}
                   </p>
                   <p className="text-[10px] text-[var(--text-muted)] mt-0.5">
-                    Maximum 25 MB • PDF or DOCX
+                    Strictly PDF or Word Documents (.pdf, .doc, .docx) • Maximum 5 MB
                   </p>
                 </div>
+                {fileError && (
+                  <p className="text-xs text-[var(--cherry-pink)] mt-1.5 font-medium">
+                    {fileError}
+                  </p>
+                )}
               </div>
 
               <div>

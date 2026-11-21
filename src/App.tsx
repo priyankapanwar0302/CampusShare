@@ -12,6 +12,7 @@ import { BookmarksView } from './components/bookmarks/BookmarksView';
 import { SearchModal } from './components/modals/SearchModal';
 import { PDFViewerModal } from './components/modals/PDFViewerModal';
 import { RequestResourceModal } from './components/modals/RequestResourceModal';
+import { StudentUploadModal } from './components/modals/StudentUploadModal';
 import { AuthModal } from './components/modals/AuthModal';
 import { ChangePasswordModal } from './components/modals/ChangePasswordModal';
 import { ToastContainer } from './components/common/ToastContainer';
@@ -59,6 +60,7 @@ const MainContent: React.FC = () => {
       <SearchModal />
       <PDFViewerModal />
       <RequestResourceModal />
+      <StudentUploadModal />
       <AuthModal />
       <ChangePasswordModal />
       <ToastContainer />

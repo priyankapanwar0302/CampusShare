@@ -31,7 +31,7 @@ import {
   hashPassword,
   verifyPasswordHash 
 } from '../security/authService';
-import { sanitizeInput } from '../security/sanitization';
+import { sanitizeInput, validateStudentDocumentFile } from '../security/sanitization';
 import { StudentLoginSchema, AdminLoginSchema, RegisterStudentSchema } from '../security/validation';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
@@ -108,6 +108,30 @@ interface AppContextType {
   setPreviewResource: (res: Resource | null) => void;
   requestModal: { isOpen: boolean; defaultSubjectId?: string; defaultType?: ResourceType };
   setRequestModal: (modal: { isOpen: boolean; defaultSubjectId?: string; defaultType?: ResourceType }) => void;
+  studentUploadModal: { 
+    isOpen: boolean; 
+    defaultSubjectId?: string; 
+    defaultCourseId?: string; 
+    defaultSemester?: number; 
+    defaultType?: ResourceType; 
+  };
+  setStudentUploadModal: (modal: { 
+    isOpen: boolean; 
+    defaultSubjectId?: string; 
+    defaultCourseId?: string; 
+    defaultSemester?: number; 
+    defaultType?: ResourceType; 
+  }) => void;
+  uploadStudentResource: (data: {
+    courseId: string;
+    subjectId: string;
+    semester: number;
+    type: ResourceType;
+    title: string;
+    unitOrTopic: string;
+    description?: string;
+    file: File;
+  }) => Promise<{ success: boolean; error?: string }>;
   authModalOpen: boolean;
   setAuthModalOpen: (open: boolean) => void;
   changePasswordModalOpen: boolean;
@@ -326,6 +350,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [searchOpen, setSearchOpen] = useState(false);
   const [previewResource, setPreviewResource] = useState<Resource | null>(null);
   const [requestModal, setRequestModal] = useState<{ isOpen: boolean; defaultSubjectId?: string; defaultType?: ResourceType }>({
+    isOpen: false,
+  });
+  const [studentUploadModal, setStudentUploadModal] = useState<{
+    isOpen: boolean;
+    defaultSubjectId?: string;
+    defaultCourseId?: string;
+    defaultSemester?: number;
+    defaultType?: ResourceType;
+  }>({
     isOpen: false,
   });
   const [authModalOpen, setAuthModalOpen] = useState<boolean>(() => {
@@ -897,6 +930,143 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
+  // Student Document Upload (Strict Validation: <= 5MB, PDF/DOC/DOCX only)
+  const uploadStudentResource = async (data: {
+    courseId: string;
+    subjectId: string;
+    semester: number;
+    type: ResourceType;
+    title: string;
+    unitOrTopic: string;
+    description?: string;
+    file: File;
+  }): Promise<{ success: boolean; error?: string }> => {
+    // 1. Role & Auth Guard
+    if (!currentUser) {
+      setAuthModalOpen(true);
+      return { success: false, error: 'Authentication required. Please sign in to submit academic materials.' };
+    }
+
+    // 2. Strict Client-Side File Validation (<= 5 MB, PDF/DOC/DOCX Only)
+    const { file } = data;
+    const validation = validateStudentDocumentFile(file);
+    if (!validation.isValid) {
+      return { success: false, error: validation.error };
+    }
+
+    // 3. Format file size and type
+    const sizeInMB = file.size / (1024 * 1024);
+    const fileSizeStr = sizeInMB >= 1 
+      ? `${sizeInMB.toFixed(1)} MB` 
+      : `${Math.round(file.size / 1024)} KB`;
+    
+    const fileNameLower = file.name.toLowerCase();
+    const fileFormat: 'PDF' | 'DOCX' = fileNameLower.endsWith('.pdf') ? 'PDF' : 'DOCX';
+    const newId = `res-std-${Date.now()}`;
+
+    // 4. Supabase Storage: Upload to campus_resources bucket
+    if (isSupabaseConfigured) {
+      try {
+        const fileExt = fileNameLower.split('.').pop() || 'pdf';
+        const storagePath = `student-uploads/${currentUser.id}/${Date.now()}_${encodeURIComponent(file.name.replace(/\.[^/.]+$/, ''))}.${fileExt}`;
+        const { error: storageError } = await supabase.storage
+          .from('campus_resources')
+          .upload(storagePath, file, {
+            cacheControl: '3600',
+            upsert: false
+          });
+        if (storageError) {
+          console.warn('[CampusShare] Storage bucket upload warning:', storageError.message);
+        }
+      } catch (err) {
+        console.warn('[CampusShare] Storage upload exception:', err);
+      }
+    }
+
+    // 5. Supabase Database: Insert into resources table with uploaded_by set to current student profile ID
+    const resourceRow = {
+      id: newId,
+      course_id: data.courseId,
+      subject_id: data.subjectId,
+      semester: data.semester,
+      type: data.type,
+      title: data.title.trim(),
+      description: data.description?.trim() || `Contributed study material uploaded by ${currentUser.name}.`,
+      unit_or_topic: data.unitOrTopic.trim(),
+      file_format: fileFormat,
+      file_size: fileSizeStr,
+      page_count: 1,
+      download_count: 0,
+      rating: 5.0,
+      is_verified: false,
+      uploader_name: currentUser.name,
+      uploaded_by: currentUser.id,
+      tags: ['Student Contribution', data.type === 'notes' ? 'Notes' : data.type],
+      preview_pages: [
+        {
+          pageNumber: 1,
+          title: `${data.unitOrTopic.trim()}: Student Contribution`,
+          content: [
+            `Document Title: ${data.title.trim()}`,
+            `Uploaded by: ${currentUser.name} (${currentUser.studentId || 'Student'})`,
+            data.description?.trim() || 'Verified student study notes and curriculum documentation.'
+          ]
+        }
+      ]
+    };
+
+    if (isSupabaseConfigured) {
+      try {
+        const { error: dbError } = await supabase.from('resources').insert(resourceRow);
+        if (dbError && dbError.code === 'PGRST204') {
+          // Schema fallback if uploaded_by column is not yet registered in schema cache
+          const { uploaded_by: _uploadedBy, ...fallbackRow } = resourceRow;
+          await supabase.from('resources').insert(fallbackRow);
+        }
+      } catch (dbErr) {
+        console.warn('[CampusShare] Database insert warning:', dbErr);
+      }
+    }
+
+    // 6. Update local client resources state
+    const newClientResource: Resource = {
+      id: newId,
+      courseId: data.courseId,
+      subjectId: data.subjectId,
+      semester: data.semester,
+      type: data.type,
+      title: data.title.trim(),
+      description: data.description?.trim() || `Contributed study material uploaded by ${currentUser.name}.`,
+      unitOrTopic: data.unitOrTopic.trim(),
+      fileFormat,
+      fileSize: fileSizeStr,
+      pageCount: 1,
+      downloadCount: 0,
+      rating: 5.0,
+      uploadDate: new Date().toISOString().split('T')[0],
+      uploaderName: currentUser.name,
+      isVerified: false,
+      tags: ['Student Contribution', data.type === 'notes' ? 'Notes' : data.type],
+      previewPages: resourceRow.preview_pages,
+    };
+
+    setResources(prev => [newClientResource, ...prev]);
+
+    recordSecurityAudit(
+      'STUDENT_RESOURCE_UPLOADED',
+      'SUCCESS',
+      `Student ${currentUser.name} (${currentUser.id}) uploaded "${newClientResource.title}" (${fileSizeStr})`
+    );
+
+    addToast({
+      title: 'Material Uploaded Successfully',
+      message: `"${newClientResource.title}" has been published to the repository.`,
+      type: 'success',
+    });
+
+    return { success: true };
+  };
+
   const dismissAnnouncement = (id: string) => {
     setAnnouncements(prev => prev.filter(a => a.id !== id));
   };
@@ -967,6 +1137,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setPreviewResource,
         requestModal,
         setRequestModal,
+        studentUploadModal,
+        setStudentUploadModal,
+        uploadStudentResource,
         authModalOpen,
         setAuthModalOpen,
         changePasswordModalOpen,

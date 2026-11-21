@@ -13,7 +13,8 @@ import {
   Search,
   BookOpen,
   Sparkles,
-  Layers
+  Layers,
+  Upload
 } from 'lucide-react';
 
 interface SubjectHubProps {
@@ -35,7 +36,10 @@ export const SubjectHub: React.FC<SubjectHubProps> = ({ subjectId, initialTab = 
     downloadingId,
     isBookmarked, 
     toggleBookmark,
-    setRequestModal 
+    setRequestModal,
+    setStudentUploadModal,
+    currentUser,
+    setAuthModalOpen 
   } = useApp();
 
   const [activeTab, setActiveTab] = useState<ResourceType>(initialTab);
@@ -168,12 +172,31 @@ export const SubjectHub: React.FC<SubjectHubProps> = ({ subjectId, initialTab = 
           </p>
         </div>
 
-        <button
-          onClick={() => setRequestModal({ isOpen: true, defaultSubjectId: subject.id, defaultType: activeTab })}
-          className="self-start sm:self-center px-3.5 py-2 rounded-xl border border-[var(--color-border)] hover:border-[var(--focus)] bg-[var(--color-surface)] text-xs font-bold text-[var(--link)] transition-all shrink-0 cursor-pointer shadow-xs"
-        >
-          + Request Missing Material
-        </button>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0">
+          <button
+            onClick={() => {
+              if (!currentUser) setAuthModalOpen(true);
+              else setStudentUploadModal({
+                isOpen: true,
+                defaultCourseId: course.id,
+                defaultSubjectId: subject.id,
+                defaultSemester: subject.semester,
+                defaultType: activeTab
+              });
+            }}
+            className="self-start sm:self-center px-3.5 py-2 rounded-xl border border-[var(--color-border)] hover:border-[var(--focus)] bg-[var(--color-surface)] text-xs font-bold text-[var(--link)] transition-all shrink-0 cursor-pointer shadow-xs flex items-center justify-center gap-1.5"
+          >
+            <Upload className="w-3.5 h-3.5 text-[var(--link)]" />
+            <span>Upload Material</span>
+          </button>
+
+          <button
+            onClick={() => setRequestModal({ isOpen: true, defaultSubjectId: subject.id, defaultType: activeTab })}
+            className="self-start sm:self-center px-3.5 py-2 rounded-xl border border-[var(--color-border)] hover:border-[var(--focus)] bg-[var(--color-surface)] text-xs font-bold text-[var(--link)] transition-all shrink-0 cursor-pointer shadow-xs"
+          >
+            + Request Missing Material
+          </button>
+        </div>
       </div>
 
       {/* 5-Tab Resource Explorer */}
@@ -222,12 +245,31 @@ export const SubjectHub: React.FC<SubjectHubProps> = ({ subjectId, initialTab = 
       {filteredResources.length === 0 ? (
         <div className="bg-[var(--color-surface)] rounded-2xl border border-dashed border-[var(--color-border)] p-12 text-center text-xs text-[var(--color-text-muted)] space-y-3">
           <p className="text-sm font-semibold text-[var(--color-text)]">No files in this section yet.</p>
-          <button
-            onClick={() => setRequestModal({ isOpen: true, defaultSubjectId: subject.id, defaultType: activeTab })}
-            className="text-[var(--link)] font-bold hover:underline block mx-auto text-xs cursor-pointer"
-          >
-            Notify Faculty Coordinator & Request Upload
-          </button>
+          <div className="flex items-center justify-center gap-3">
+            <button
+              onClick={() => setRequestModal({ isOpen: true, defaultSubjectId: subject.id, defaultType: activeTab })}
+              className="text-[var(--link)] font-bold hover:underline text-xs cursor-pointer"
+            >
+              Notify Faculty Coordinator & Request Upload
+            </button>
+            <span className="text-[var(--color-text-muted)] text-xs">•</span>
+            <button
+              onClick={() => {
+                if (!currentUser) setAuthModalOpen(true);
+                else setStudentUploadModal({
+                  isOpen: true,
+                  defaultCourseId: course.id,
+                  defaultSubjectId: subject.id,
+                  defaultSemester: subject.semester,
+                  defaultType: activeTab
+                });
+              }}
+              className="text-[var(--link)] font-bold hover:underline text-xs cursor-pointer flex items-center gap-1"
+            >
+              <Upload className="w-3 h-3" />
+              <span>Upload Material</span>
+            </button>
+          </div>
         </div>
       ) : (
         <div className="bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] divide-y divide-[var(--color-border)] overflow-hidden shadow-xs">

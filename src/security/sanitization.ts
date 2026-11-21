@@ -136,3 +136,41 @@ export async function validatePDFFile(file: File): Promise<FileValidationResult>
 
   return { isValid: true, detectedFormat: 'PDF' };
 }
+
+/**
+ * Strict Client-Side File Validation for Student Uploads
+ * Rules: Max 5 MB, strictly PDF or Word Documents (.pdf, .doc, .docx)
+ */
+export const STUDENT_ALLOWED_MIME_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+];
+
+export const STUDENT_ALLOWED_EXTENSIONS = ['.pdf', '.doc', '.docx'];
+
+export const STUDENT_FILE_ACCEPT = '.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+export const STUDENT_MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5 MB
+
+export function validateStudentDocumentFile(file: File): { isValid: boolean; error?: string } {
+  const fileNameLower = file.name.toLowerCase();
+  const hasValidExt = STUDENT_ALLOWED_EXTENSIONS.some(ext => fileNameLower.endsWith(ext));
+  const hasValidMime = !file.type || STUDENT_ALLOWED_MIME_TYPES.includes(file.type);
+
+  if (!hasValidExt || !hasValidMime) {
+    return {
+      isValid: false,
+      error: 'Invalid format. Only PDF and Word documents (.pdf, .doc, .docx) are allowed.',
+    };
+  }
+
+  if (file.size > STUDENT_MAX_FILE_SIZE_BYTES) {
+    return {
+      isValid: false,
+      error: 'File size exceeds the 5 MB limit. Please upload a file of 5 MB or smaller.',
+    };
+  }
+
+  return { isValid: true };
+}
